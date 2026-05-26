@@ -1,0 +1,87 @@
+// Singleton
+object ConfiguracionSistema {
+
+    val institucion = "Instituto Tecnológico"
+    val notaMinimaAprobacion = 7.0
+}
+
+// Data class
+data class Estudiante(
+
+    val id: Int,
+    val nombre: String,
+    var calificacion: Double,
+    val observaciones: String? = null
+)
+
+// Función con parámetro por defecto
+fun calcularEstado(
+    nota: Double,
+    notaMinima: Double = ConfiguracionSistema.notaMinimaAprobacion
+): String {
+
+    return when {
+
+        nota < notaMinima -> "Reprobado"
+
+        nota in 7.0..8.0 -> "Bueno"
+
+        nota in 9.0..10.0 -> "Excelente"
+
+        else -> "Nota inválida"
+    }
+}
+
+fun main() {
+
+    val estudiantes = listOf(
+
+        Estudiante(
+            1,
+            "Carlos",
+            5.5,
+            "Debe mejorar asistencia"
+        ),
+
+        Estudiante(
+            2,
+            "Ana",
+            8.0,
+            null
+        ),
+
+        Estudiante(
+            3,
+            "Luis",
+            9.5,
+            "Excelente desempeño"
+        )
+    )
+
+    println("Institución: ${ConfiguracionSistema.institucion}")
+
+    for (estudiante in estudiantes) {
+
+        val estado =
+            calcularEstado(estudiante.calificacion)
+
+        val observacion =
+            estudiante.observaciones
+                ?: "Sin observaciones"
+
+        println("-------------------")
+        println("ID: ${estudiante.id}")
+        println("Nombre: ${estudiante.nombre}")
+        println("Calificación: ${estudiante.calificacion}")
+        println("Estado: $estado")
+        println("Observación: $observacion")
+
+        println(
+            "Cantidad caracteres observación: ${
+                estudiante.observaciones?.length
+            }"
+        )
+    }
+
+    println("PRUEBA FUNCIONANDO")
+}
