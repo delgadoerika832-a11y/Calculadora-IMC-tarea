@@ -13,6 +13,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // Aquí llamamos a nuestra función de pantalla
             PantallaUno()
         }
     }
@@ -20,10 +21,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PantallaUno() {
+    // Aquí van tus variables de estado
     var nombre by remember { mutableStateOf("") }
     var peso by remember { mutableStateOf("") }
     var altura by remember { mutableStateOf("") }
+    var mensaje by remember { mutableStateOf("Ingresa tus datos") }
 
+    // Y aquí va el diseño de la pantalla
     Column(modifier = Modifier.padding(16.dp)) {
         TextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") })
         Spacer(modifier = Modifier.height(8.dp))
@@ -32,5 +36,15 @@ fun PantallaUno() {
         Spacer(modifier = Modifier.height(8.dp))
 
         TextField(value = altura, onValueChange = { altura = it }, label = { Text("Altura (cm)") })
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+            mensaje = "¡Hola $nombre! Datos recibidos."
+        }) {
+            Text("Guardar Datos")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = mensaje)
     }
 }
