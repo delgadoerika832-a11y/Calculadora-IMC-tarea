@@ -18,18 +18,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-
-            NavHost(navController = navController, startDestination = "pantalla_uno") {
-                composable("pantalla_uno") { PantallaUno(navController) }
-
-                // Aquí definimos que la pantalla dos recibe un parámetro llamado "nombre"
-                composable(
-                    "pantalla_dos/{nombre}",
-                    arguments = listOf(navArgument("nombre") { type = NavType.StringType })
-                ) { backStackEntry ->
-                    val nombreRecibido = backStackEntry.arguments?.getString("nombre") ?: "Invitado"
-                    PantallaDos(navController, nombreRecibido)
+            MaterialTheme {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "pantalla_uno") {
+                    composable("pantalla_uno") { PantallaUno(navController) }
+                    composable(
+                        "pantalla_dos/{nombre}",
+                        arguments = listOf(navArgument("nombre") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val nombreRecibido = backStackEntry.arguments?.getString("nombre") ?: "Invitado"
+                        PantallaDos(navController, nombreRecibido)
+                    }
                 }
             }
         }
@@ -40,18 +39,41 @@ class MainActivity : ComponentActivity() {
 fun PantallaUno(navController: androidx.navigation.NavController) {
     var nombre by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        TextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") })
-        Button(onClick = { navController.navigate("pantalla_dos/$nombre") }) {
-            Text("Ir a Pantalla 2")
+    Column(
+        modifier = Modifier.padding(16.dp).fillMaxSize(),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "Bienvenido a mi App", style = MaterialTheme.typography.headlineMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+                TextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text("Escribe tu nombre") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        if (nombre.isNotBlank()) {
+                            navController.navigate("pantalla_dos/$nombre")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Ir a Pantalla 2")
+                }
+            }
         }
     }
 }
 
 @Composable
 fun PantallaDos(navController: androidx.navigation.NavController, nombre: String) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("¡Bienvenido, $nombre!")
+    Column(modifier = Modifier.padding(16.dp).fillMaxSize(), verticalArrangement = Arrangement.Center) {
+        Text("¡Bienvenido, $nombre!", style = MaterialTheme.typography.headlineLarge)
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { navController.popBackStack() }) {
             Text("Volver atrás")
         }
