@@ -8,43 +8,43 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // Aquí llamamos a nuestra función de pantalla
-            PantallaUno()
+            // Este es el controlador que gestiona los "viajes" entre pantallas
+            val navController = rememberNavController()
+
+            // NavHost define qué pantallas existen en la app
+            NavHost(navController = navController, startDestination = "pantalla_uno") {
+                composable("pantalla_uno") { PantallaUno(navController) }
+                composable("pantalla_dos") { PantallaDos(navController) }
+            }
         }
     }
 }
 
 @Composable
-fun PantallaUno() {
-    // Aquí van tus variables de estado
-    var nombre by remember { mutableStateOf("") }
-    var peso by remember { mutableStateOf("") }
-    var altura by remember { mutableStateOf("") }
-    var mensaje by remember { mutableStateOf("Ingresa tus datos") }
-
-    // Y aquí va el diseño de la pantalla
+fun PantallaUno(navController: androidx.navigation.NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
-        TextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") })
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(value = peso, onValueChange = { peso = it }, label = { Text("Peso (kg)") })
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(value = altura, onValueChange = { altura = it }, label = { Text("Altura (cm)") })
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = {
-            mensaje = "¡Hola $nombre! Datos recibidos."
-        }) {
-            Text("Guardar Datos")
+        Text("Esta es la Pantalla 1")
+        Button(onClick = { navController.navigate("pantalla_dos") }) {
+            Text("Ir a Pantalla 2")
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = mensaje)
+@Composable
+fun PantallaDos(navController: androidx.navigation.NavController) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("¡Bienvenida a la Pantalla 2!")
+        Button(onClick = { navController.popBackStack() }) {
+            Text("Volver atrás")
+        }
     }
 }
